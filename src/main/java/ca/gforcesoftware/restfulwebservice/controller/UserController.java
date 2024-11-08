@@ -1,5 +1,6 @@
 package ca.gforcesoftware.restfulwebservice.controller;
 
+import ca.gforcesoftware.restfulwebservice.dto.UserDto;
 import ca.gforcesoftware.restfulwebservice.entity.User;
 import ca.gforcesoftware.restfulwebservice.service.UserService;
 import lombok.AllArgsConstructor;
@@ -21,31 +22,31 @@ public class UserController {
 
     //build create User REST API
     @PostMapping("create")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User savedUser = userService.createUser(user);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user) {
+        UserDto savedUser = userService.createUser(user);
         return  new ResponseEntity<>(savedUser,HttpStatus.CREATED);
     }
 
     //build get user by id REST API
     //http://localhost:8080/api/users/1
     @GetMapping("{id}")
-    public ResponseEntity<User> findUserById(@PathVariable Long id) {
-        User findUser = userService.getUserById(id);
+    public ResponseEntity<UserDto> findUserById(@PathVariable Long id) {
+        UserDto findUser = userService.getUserById(id);
         return  new ResponseEntity<>(findUser,HttpStatus.OK);
     }
 
     //http://localhost:8080/api/users/
     @GetMapping
-    public ResponseEntity<List<User>> findAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDto>> findAllUsers() {
+        List<UserDto> users = userService.getAllUsers();
         return  new ResponseEntity<>(users,HttpStatus.OK);
     }
 
     @PutMapping("update/{id}")
-    public ResponseEntity<User> updateUser(@RequestBody User user,
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto user,
                                            @PathVariable Long id) {
         user.setId(id);
-        User updatedUser = userService.updateUser(user);
+        UserDto updatedUser = userService.updateUser(user);
         return ResponseEntity.ok(updatedUser);
     }
 

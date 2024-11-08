@@ -1,5 +1,6 @@
 package ca.gforcesoftware.restfulwebservice.service;
 
+import ca.gforcesoftware.restfulwebservice.dto.UserDto;
 import ca.gforcesoftware.restfulwebservice.entity.User;
 
 import java.util.List;
@@ -8,13 +9,13 @@ import java.util.List;
  * @author gavinhashemi on 2024-11-07
  */
 public interface UserService {
-    User createUser(User user);
+    UserDto createUser(UserDto user);
 
-    User getUserById(Long id);
+    UserDto getUserById(Long id);
 
-    List<User> getAllUsers();
+    List<UserDto> getAllUsers();
 
-    User updateUser(User user);
+    UserDto updateUser(UserDto user);
 
     void deleteUser(Long id);
 }

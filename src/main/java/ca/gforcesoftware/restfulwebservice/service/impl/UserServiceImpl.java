@@ -1,11 +1,15 @@
 package ca.gforcesoftware.restfulwebservice.service.impl;
 
+import ca.gforcesoftware.restfulwebservice.converter.MapToUserDto;
+import ca.gforcesoftware.restfulwebservice.converter.MapToUser;
+import ca.gforcesoftware.restfulwebservice.dto.UserDto;
 import ca.gforcesoftware.restfulwebservice.entity.User;
 import ca.gforcesoftware.restfulwebservice.repository.UserRepository;
 import ca.gforcesoftware.restfulwebservice.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +21,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final MapToUserDto mapToUserDto = new MapToUserDto();
+    private final MapToUser mapToUser = new MapToUser();
     // I don't need this as I can use lombok AllArgConstructor
 //    public UserServiceImpl(UserRepository userRepository) {
 //        this.userRepository = userRepository;
@@ -24,34 +30,38 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User createUser(User user) {
-        userRepository.save(user);
-        return user;
+    public UserDto createUser(UserDto user) {
+
+        User savedUser = userRepository.save(mapToUser.convert(user));
+        return mapToUserDto.convert(savedUser);
     }
 
     @Override
-    public User getUserById(Long id) {
+    public UserDto getUserById(Long id) {
         Optional<User> optionalUser =  userRepository.findById(id);
         if (optionalUser.isPresent()) {
-            return optionalUser.get();
+            return mapToUserDto.convert(optionalUser.get());
         } else {
             return null;
         }
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserDto> userDtos = new ArrayList<>();
+        users.forEach(user -> userDtos.add(mapToUserDto.convert(user)));
+        return userDtos;
     }
 
     @Override
-    public User updateUser(User user) {
+    public UserDto updateUser(UserDto user) {
         User userToUpdate = userRepository.findById(user.getId()).get();
         userToUpdate.setFirstName(user.getFirstName());
         userToUpdate.setLastName(user.getLastName());
         userToUpdate.setEmail(user.getEmail());
-        userRepository.save(userToUpdate);
-        return userToUpdate;
+        UserDto userDto = mapToUserDto.convert(userRepository.save(userToUpdate));
+        return userDto;
     }
 
     @Override
