@@ -5,6 +5,7 @@ import ca.gforcesoftware.restfulwebservice.converter.MapToUserDto;
 import ca.gforcesoftware.restfulwebservice.converter.MapToUser;
 import ca.gforcesoftware.restfulwebservice.dto.UserDto;
 import ca.gforcesoftware.restfulwebservice.entity.User;
+import ca.gforcesoftware.restfulwebservice.exception.EmailAlreadyExistsException;
 import ca.gforcesoftware.restfulwebservice.exception.UserNotFoundException;
 import ca.gforcesoftware.restfulwebservice.repository.UserRepository;
 import ca.gforcesoftware.restfulwebservice.service.UserService;
@@ -39,6 +40,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
+        Optional<User> userOptional = userRepository.findByEmail(userDto.getEmail());
+        if (userOptional.isPresent()) {
+            throw new EmailAlreadyExistsException(userDto.getEmail() + " already exists");
+        }
+
         //Convert UserDto into User JPA Entity
         //User savedUser = userRepository.save(mapToUser.convert(userDto)); <-- Old style
         //User savedUser = userRepository.save(modelMapper.map(userDto, User.class));// <-- ModelMapper

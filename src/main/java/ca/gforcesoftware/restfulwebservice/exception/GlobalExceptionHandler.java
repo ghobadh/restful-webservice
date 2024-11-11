@@ -31,4 +31,20 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
     }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorDetails> handleAlreadyEmailIsAlreadyExist (EmailAlreadyExistsException exception,
+                                                                       WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                /* I put the getDescription as false, otherwise it will how the client information like this
+                "path": "uri=/api/users/delete/9;client=127.0.0.1",
+                 */
+                webRequest.getDescription(false),
+                "USER_EMAIL_ALREADY_EXISTS"
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
+    }
 }
