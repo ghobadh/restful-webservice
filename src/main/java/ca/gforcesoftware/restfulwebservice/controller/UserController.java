@@ -2,12 +2,16 @@ package ca.gforcesoftware.restfulwebservice.controller;
 
 import ca.gforcesoftware.restfulwebservice.dto.UserDto;
 import ca.gforcesoftware.restfulwebservice.entity.User;
+import ca.gforcesoftware.restfulwebservice.exception.ErrorDetails;
+import ca.gforcesoftware.restfulwebservice.exception.UserNotFoundException;
 import ca.gforcesoftware.restfulwebservice.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -55,6 +59,25 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.ok("the user with userId " + id + " is deleted now." );
     }
+
+    //The @ExceptionHandler is an
+    //annotation to handle the specific exception and sending the custom responses to the client.
+    // I commented in here and move the method to the globalExceptionHandler class
+//    @ExceptionHandler(UserNotFoundException.class)
+//    public ResponseEntity<ErrorDetails> handleResourcNotFoundExcpetion(UserNotFoundException exception,
+//                                                                       WebRequest webRequest) {
+//        ErrorDetails errorDetails = new ErrorDetails(
+//                LocalDateTime.now(),
+//                exception.getMessage(),
+//                /* I put the getDescription as false, otherwise it will how the client information like this
+//                "path": "uri=/api/users/delete/9;client=127.0.0.1",
+//                 */
+//                webRequest.getDescription(false),
+//                "USER_NOT_FOUND"
+//        );
+//
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
+//    }
 
 
 }

@@ -5,6 +5,7 @@ import ca.gforcesoftware.restfulwebservice.converter.MapToUserDto;
 import ca.gforcesoftware.restfulwebservice.converter.MapToUser;
 import ca.gforcesoftware.restfulwebservice.dto.UserDto;
 import ca.gforcesoftware.restfulwebservice.entity.User;
+import ca.gforcesoftware.restfulwebservice.exception.UserNotFoundException;
 import ca.gforcesoftware.restfulwebservice.repository.UserRepository;
 import ca.gforcesoftware.restfulwebservice.service.UserService;
 import lombok.AllArgsConstructor;
@@ -51,15 +52,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        Optional<User> optionalUser =  userRepository.findById(id);
-        if (optionalUser.isPresent()) {
+        // for handling "not found id", I need to add orElseThrow and remove the Optional of the field
+        User optionalUser =  userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("User","id",id)
+        );
             //return mapToUserDto.convert(optionalUser.get()); <-- old style
              //return modelMapper.map(optionalUser.get(), UserDto.class);// <-- ModelMapper
-            return AutoUserMapper.INSTANCE.mapToUserDto(optionalUser.get()); // <-- MapStruct
-
-        } else {
-            return null;
-        }
+            return AutoUserMapper.INSTANCE.mapToUserDto(optionalUser); // <-- MapStruct
     }
 
     @Override
@@ -74,7 +73,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto user) {
-        User userToUpdate = userRepository.findById(user.getId()).get();
+        User userToUpdate = userRepository.findById(user.getId()).orElseThrow(
+                () -> new UserNotFoundException("User","id",user.getId())
+        );
         userToUpdate.setFirstName(user.getFirstName());
         userToUpdate.setLastName(user.getLastName());
         userToUpdate.setEmail(user.getEmail());
@@ -85,6 +86,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
+        User userToUpdate = userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("User","id",id)
+        );
         userRepository.deleteById(id);
     }
 }
