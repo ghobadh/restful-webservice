@@ -47,4 +47,23 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
+
+    /*
+    Since I used excpetion class, all errors will invoke this method.
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorDetails> handleGlobalExceptions (Exception exception,
+                                                                          WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                /* I put the getDescription as false, otherwise it will how the client information like this
+                "path": "uri=/api/users/delete/9;client=127.0.0.1",
+                 */
+                webRequest.getDescription(false),
+                "INTERNAL_SERVER_ERROR"
+        );
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails);
+    }
 }
