@@ -1,12 +1,21 @@
 package ca.gforcesoftware.restfulwebservice.exception;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author gavinhashemi on 2024-11-11
@@ -14,7 +23,7 @@ import java.time.LocalDateTime;
 //When we want to use Exception handling in globally, we need to add @ControllerAdvice Annotation. Note
 // that @ExceptionHandler([ResourceName].class) will handle only the ResourceName specifics exception
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorDetails> handleResourcNotFoundExcpetion(UserNotFoundException exception,
@@ -65,5 +74,26 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails);
+    }
+
+    //This method is for the extension of ResponseEntityExceptionHandler
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatusCode status,
+                                                                  WebRequest request) {
+
+        Map<String, String> errors = new HashMap<>();
+        List<ObjectError> errorList = ex.getBindingResult().getAllErrors();
+
+
+        errorList.forEach( error -> {
+            String errorMessage = error.getDefaultMessage();
+            String fieldName = ((FieldError) error).getField();
+            errors.put(fieldName, errorMessage);
+        });
+
+        //instead of calling super, I use ResponseEntity and for all failure validation , I need to use BAD_REQUEST STATUS
+        return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
     }
 }
