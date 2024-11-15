@@ -135,3 +135,87 @@ Date: Fri, 15 Nov 2024 17:25:45 GMT
   "message": "Shutting down, bye..."
 }
 ```
+
+
+
+
+## SpringDoc/Swagger-ui
+* __springdoc-openapi__ java library helps to automate the genration of API documentation using Spring Boot projects
+* __springdoc-openapi__ java library provides integration between spring-boot and swagger-ui. Automatically generates
+  documentation in JSON/YMAL and HTML format APIs.
+* This library support
+  * OpenAPI 3
+  * Spring-boot v3 (JAva 17+)
+  * JSR-303 specifically for @NotNull, @Min, @Max and @Size (validation tags)
+  * Swagger-ui
+  * OAuth 2
+* This a community-based project, not maintained by the spring framework contributions
+
+### Development Steps
+* Adding  __springdoc-openapi__ Maven dependency
+``` 
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+```
+I will have access using /swagger-ui/index.html `http://localhost:8080/swagger-ui/index.html`
+* Defining General API information (Using Annotation)
+``` 
+@OpenAPIDefinition(
+        info = @Info(
+                title = "Gargamel Spring Boot Doc",
+                description = "Gargamel Spring Boot Doc Description",
+                version = "v1.0",
+                contact = @Contact(
+                        name = "Gavin",
+                        email = "Gavin.Hashemi@GForceSoftware.ca",
+                        url = "https://www.linkedin.com/in/ghobadh/"
+
+                ),
+                license = @License(
+                        name = "Apache 2.0",
+                        url = "https://www.linkedin.com/in/ghobadh/"
+                )
+
+        ),
+        externalDocs = @ExternalDocumentation(
+                description = "Spring Boot User Management Documentation",
+                url = "http://localhost:8080/Users"
+        )
+) 
+```
+* Customizing Swagger API Documentation with annotations
+  In class level I add @Tag
+``` 
+@Tag(
+        name = "CRUD REST APIs for User Resource",
+        description = "CRUD REST APIs for User Resource for Create User, Modify User, Delete User and Get All Users"
+) 
+```
+
+in method level, I need to add these tages
+```  
+    @Operation(
+            summary = "Update User  data REST API",
+            description = "Get all User RESTful API is used to get the user from MySQL"
+
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "20", description = "HTTP Status 200 get the all user info")
+    } )
+```
+* Customizing Swagger Model Documentation with annotations
+  in DTO class level. For example in UserDto.java
+```  
+@Schema(
+        description = "UserDto Model Information"
+)
+```
+In above each field of DTO class, I add this to describe the schema of the class
+```  
+    @Schema(
+            description = "User email"
+    )
+```
