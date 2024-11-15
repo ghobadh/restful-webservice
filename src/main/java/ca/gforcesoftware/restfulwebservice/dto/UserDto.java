@@ -18,14 +18,14 @@ public class UserDto {
     private Long id;
 
     //User first name and last name should not be empty
-    @NotEmpty
+    @NotEmpty(message = "User first name should not be null or empty")
     private String firstName;
 
-    @NotEmpty
+    @NotEmpty(message = "User last name should not be null or empty")
     private String lastName;
 
     // email address should be valid and not empty
-    @NotEmpty
-    @Email
+    @NotEmpty(message = "User email address should not be null or empty")
+    @Email(message =  " email address should be valid")
     private String email;
 }

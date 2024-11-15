@@ -93,7 +93,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        //instead of calling super, I use ResponseEntity and for all failure validation , I need to use BAD_REQUEST STATUS
+        //instead of calling super, I use ResponseEntity and for all failure validation , I need to use BAD_REQUEST STATUS(HTTP 500)
         return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
     }
 }
