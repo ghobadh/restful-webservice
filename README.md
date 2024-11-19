@@ -140,7 +140,7 @@ Date: Fri, 15 Nov 2024 17:25:45 GMT
 
 
 ## SpringDoc/Swagger-ui
-* __springdoc-openapi__ java library helps to automate the genration of API documentation using Spring Boot projects
+* __springdoc-openapi__ java library helps to automate the generation of API documentation using Spring Boot projects
 * __springdoc-openapi__ java library provides integration between spring-boot and swagger-ui. Automatically generates
   documentation in JSON/YMAL and HTML format APIs.
 * This library support
